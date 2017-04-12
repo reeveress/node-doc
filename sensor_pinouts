@@ -1,0 +1,41 @@
+I2C Sensors:
+
+
+Adafruit MCP9808 Precision I2C Temperature Sensor, $5, arduino code
+
+Vdd--GND--SCL--SDA--ALert--A0--A1--A2
+
+
+
+Adafruit HTU21D-F Temperature & Humidity Sensor Breakout Board, $15, arduino code
+
+Vin--3v3--GND--SDA--SCL
+
+
+
+AM2315 - Encased I2C Temperature/Humidity Sensor, $30, arduino code
+
+Wired: 5V, GND, SCL, SDA
+
+
+
+Adafruit BME280 Humidity + Barometric Pressure + Temperature Sensor Breakout, $20, arduino code
+
+Vin--3V0--GND--SCK--SD0--SDI--CS
+(SCK and SDI are the i2c logic pins)
+
+
+
+SparkFun Humidity and Temperature Sensor Breakout - HIH6130, $30, arduino code
+SCA--SCL--AL_L--AL_H--VDD--GND
+
+
+
+DIGITAL SENSOR
+
+DHT11 basic temperature-humidity sensor + extras, $5, arduino code
+VDD--Data--Null--GND
+
+
+
+

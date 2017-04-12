@@ -1,0 +1,11 @@
+Arduino Leonardo
+
+
+
+DHCP - Ethernet2 Library allows for getting an IP from a DHCP server - HAVE TO MANUALLY ASSIGN MAC ADDRESS NO MATTER WHAT.
+Possible work around: sketch that generates a random MAC address and then writes it to the EEPROM and stays persistent upon reboot.
+
+Programming sketches over ethernet - use arduino-netboot library and burn the generated bootloader to the onboard flash. Does the sketch download automatically upon reboot. 
+
+
+
