@@ -1,0 +1,8 @@
+White Rabbit Serial: A000006
+White Rabbit SFP1 PORT hostname: wr-node2p0
+White Rabbit SFP1 PORT IP: 10.1.1.154
+White Rabbit SFP2 PORT hostname: wr-node2p1
+White Rabbit SFP2 PORT IP: 10.1.1.155
+Arduino hostname: arduino0
+Arduino IP: 10.1.1.200
+Arduino MAC: 00:08:DC:00:00:4f
