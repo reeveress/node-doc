@@ -1,0 +1,135 @@
+* Necessary libraries included.
+
+
+* Define temp sensor I2c addresses.
+
+
+* Assign a value to serverIP variable (10.1.1.1)
+* Instantiate a UDP object.
+* Assign port to talk to the server over. (8888)
+* Assign a value of 1 to the ping socket (type SOCKET. Ethernet connection uses socket 0)
+* Declare the mac address variable (byte)
+* Initialize local PORT variable = 8888 (unsigned int)
+
+* Declare packetSize variable (int)
+* Initialize packetBuffer variable to hold arriving data (char)
+* Declare command variable that stores the received command data from udpClientSender (String)
+
+
+* Initialize EEPPROM_SIZE variable
+* Initialize eeadr,eeNodeAdr, eeSerialAdr
+
+
+* Initialize SX1509 and hex I2C address
+
+
+* Instantiate sensor objects - Both MCP9808s and HTU21DF
+
+
+* Declare a udp packet Struct filled with sensor data, serial and node ID
+
+
+void setup:
+
+      * Disable watchdog so it doesn't enter an infinite reset loop
+	
+      * Initialize Serial output
+
+      * Turn White Rabbit on; that's so it is on when Arduino asks for an IP address
+	delay 12 seconds to give it enough time to turn on
+
+      * Initialize all other pins as outputs by writing LOW first, then initializing, then writing LOW again. This prevents glitches in pin values that could cause unwanted power up.
+
+	snapRelay           write LOW              --> active HIGH --> silkscreen pin 2
+	FEM                 write LOW              --> active HIGH --> silkscreen pin 5
+	PAM                 write LOW              --> active HIGH --> silkscreen pin 6
+	SNAPv2_0_1          write HIGH             --> active LOW  --> silkscreen pin 3
+	SNAPv2_2_3          write HIGH             --> active LOW  --> silkscreen pin 7
+        Reset               write HIGH             --> active LOW  --> silkscreen pin 4
+
+
+      *	SX1509 Digital io card:
+	if card is found on the I2C bus, assign pinmodes to all 15 pins, read the serial number, store it in the UDP struct and EEPROM (contents of EEPROM are output when sketch is restarted)
+
+      * Read nodeID from EEPROM contents (burned by MACburner.bin sketch) and assign to UDP struct nodeID value
+
+      * Output to serial the contents of EEPROM
+
+      * Enable Watchdog
+      
+      * Configure Ethernet, restart sketch via delaying beyond the Watchdog capacity
+
+      * Configure UDP on the localPort (8888)
+
+void loop:
+	
+      * ping server at 10.1.1.1 and if reply is received, go into the loop that wraps sensor and other data into  a UDP packet and sends it over the WR network to the server AND checks for any incoming commands. 
+      * Check if top temperature sensor is found, if true then collect sensor data.
+      
+      * Check if middle temperature sensor is found, if true then collect sensor data.
+
+      * Check if humidity sensor is found, if true, collect sensor data.
+
+      * Send UDP packet to the server at 10.1.1.1 consisting of all available sensor values and other node meta data
+
+      * Clear packetBuffer before sending the next packet so as to not send junk bits.
+
+      * Udp.parsePacket() to read the packet size, in case any commands were sent to Arduino
+
+      * In case the packet size is greater than 0, then read the packet Buffer
+
+      * Convert the packet buffer contents and convert them into a string.
+
+      * go through a number of if statements for all possible commands. Note that on the server python side, you just call the relevant function with either 'on' or 'off' and the function parses the command to be sent to Arduino. PSU_off is a suicide command since it shuts off the power to the White Rabbit, might be necessary to prevent White Rabbit from melting down. 
+
+		poke
+		  -- if poke was sent via the timed thread in the udpClientReceiver.py, save the millis() value. End of sketch checks if current millis minus the 'poke' time millis are > 10 seconds, if yes then restart.
+
+		snapRelay_on
+		
+		snapRelay_off
+
+		FEM_on
+
+		FEM_off
+
+		PAM_on
+
+		PAM_off
+
+		snapv2_0_1_on
+
+		snapv2_0_1_off
+
+		snapv2_2_3_on
+
+		snapv2_2_3_off
+
+		reset
+
+		start
+		  -- start is a sequence that turns modules on in the following order, with a 15 second delay between each: PAM, FEM, snapRelay, snapv2_0_1, snapv2_2_3
+
+		shutdown
+		  -- shutdown is a sequence that turns modules OFF in the following order, with a 15 second delay between each: FEM, PAM, snapv2_0_1, snapv2_2_3, snapRelay.
+
+      * Clear the packetBuffer array to receive more data sans junk bits
+
+      * call Ethernet.maintain() in order to maintain the ip address lease from the server
+
+      * stroke the watchdog
+
+      * going into the else if no data was received, inform that ping was unsuccessful on the serial busand delay 10 seconds to restart the sketch from the setup. 
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,67 @@
+To start Arduino monitor control:
+
+hera-digi: 10.0.1.246
+hera-digi-vm: 10.0.1.247
+
+
+From the hera-digi-vm:
+
+Start redis with:
+redis-server /etc/redis.conf
+	-- redis.conf daemonizes redis server and turns off protected mode
+
+Start the Udp packet receiving script and daemonize it:
+go into monitor-control-bunker folder and type:
+
+	screen
+	python udpClientReceiverTest.py
+	ctrl - a d (to deattach from the session and go back to the shell)
+	screen -ls (lists all screen sessions)
+	screen -r nameOfScreenSession (get the name of your screen session from screen -ls and reattach to a session with -r flag)
+
+
+to collect redis data over time 
+
+	screen
+	redis-cli -r 99999999 -i 60 >> nameOfDataFile.txt
+	ctrl-a d (to deattach from the session and go back to the shell)
+
+
+to upload new sketch to the Arduino:
+	put the new .bin sketch file into the /srv/tftp/arduino directory
+	make sure that the /etc/dnsmasq.conf entry where the bin file is specified matches the name of the bin file moved to /srv/tftp/arduino directory
+	run 'sudo /etc/init.d/dnsmasq restart'
+
+go into monitor-control-bunker directory and start ipython
+import udpClientSender
+u = udpClientSender.UdpClient()
+u.reset('10.1.1.200')
+
+	this will reset Arduino which promts it to grab a new sketch from the /srv/tftp/arduino directory
+
+to turn things on; still in ipython either run this
+	u.start('10.1.1.200') // runs a start sequency that turns on PAM, FEM, 8 way snap relay, snapv2_0_1 and snapv2_2_3 in that order
+
+
+to turn things off
+	u.shutdown('10.1.1.200') // shuts down FEM, PAM, snapv2_0_1, snapv2_2_3, 8 way snap relay in that order
+
+
+to reset things
+	u.reset('10.1.1.200') // Resets via the reset pin -> restarts the bootloader/grabs sketch from /srv/tftp/arduino
+
+to turn things on/off separately
+
+	u.pam('on','10.1.1.200')
+	u.pam('off', '10.1.1.200')
+
+	u.fem('') //options same as pam
+
+	u.snapRelay('')
+
+	u.snapv2_0_1('')
+	u.snapv2_2_3('')
+
+
+
+
